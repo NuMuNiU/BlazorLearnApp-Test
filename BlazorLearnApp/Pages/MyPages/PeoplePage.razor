@@ -1,0 +1,78 @@
+﻿@page "/Data/People"
+
+@inject PeopleGateway peopleGateway
+
+<h1>People Page</h1>
+
+<h4>Insert New Person</h4>
+<EditForm Model="@newPeople" OnValidSubmit="@InsertPerson">
+    <DataAnnotationsValidator />
+    @*<ValidationSummary />*@
+
+    <InputText id="firstName" @bind-Value="newPeople.FirstName" />
+    <ValidationMessage For="()=>newPeople.FirstName" />
+
+    <InputText id="lastName" @bind-Value="newPeople.LastName" />
+    <ValidationMessage For="()=>newPeople.LastName" />
+
+    <InputText id="emailAddress" @bind-Value="newPeople.EmailAddress" />
+    <ValidationMessage For="()=>newPeople.EmailAddress" />
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+<h4>Current People</h4>
+@if (peoples is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var person in peoples)
+            {
+                <tr>
+                    <td>@person.FirstName</td>
+                    <td>@person.LastName</td>
+                    <td>@person.EmailAddress</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<People> peoples;
+
+    private People newPeople = new People();
+    //private DisplayPersonModel newPerson = new DisplayPersonModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        peoples = await peopleGateway.GetPeopleList();
+    }
+
+    private async Task InsertPerson()
+    {
+        People p = new People
+            {
+                FirstName = newPeople.FirstName,
+                LastName = newPeople.LastName,
+                EmailAddress = newPeople.EmailAddress
+            };
+
+        await peopleGateway.Save(p);
+
+        peoples.Add(p);
+
+        //newPerson = new DisplayPersonModel();
+    }
+}

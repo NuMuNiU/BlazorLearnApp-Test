@@ -1,0 +1,18 @@
+﻿@page "/"
+@using BlazorLearnApp.Logic;
+@inject DemoLogic demoLogic
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<h3>Value 1 : @demoLogic.value1</h3>
+<h3>Value 2 : @demoLogic.value2</h3>
+
+@code{
+    //private DemoLogic demoLogic;
+
+    protected override void OnInitialized()
+    {
+        //demoLogic = new();
+    }
+}
